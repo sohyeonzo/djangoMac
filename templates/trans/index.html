@@ -1,0 +1,82 @@
+{% extends 'base.html' %} 
+{% block con %} 
+
+<!-- {{d}}   딕셔너리 잘 뜨는지 확인 -->
+    <!-- 딕셔너리를 for문 돌리면 key값이 출력 된다 -->
+    <!-- value에 접근하는 방법 -->
+        <!-- itmes 매서드 이용 !! > d.items() -->
+            <!-- > 튜플들의 리스트임 : key vlaue를 튜플로 만들어서 리스트로 반환 해 주는 것 -->
+            <!-- (1, "one"), (2,"two") 이런식으로 출력됨 -->
+            <!-- + a,b = 1,2 이거 출력하면 a=1, b=2 이렇게 나온다 (튜플) 이거랑 items결합 ! -->
+    <!-- {% for key, value in d.items %}    
+        {{key}} {{value}}
+    {% endfor %}  -->
+
+    <!-- > 이걸 이용해서 나라코드가 dictionary 형태로 들어있는 google trans 에 사용하기 -->
+
+
+<div class="container mt-5 mb-5">
+    <h1><b>번역기</b></h1>
+
+    <!-- {{na}}  찍어보면 나라별 언어 딕셔너리 형태로 뜸 -->
+            <!-- key 값에 나라코드 / value 값에 나라이름 들어가 있음 -->
+
+    <form method="post" name="transForm">
+                        <!-- name은 java script 위해서 -->
+        {% csrf_token %} 
+        <div class="row mt-5">
+            <div class="col-lg-5">
+                <textarea type="text" name="con" value="{{con}}" class="form-control" placeholder="번역할 텍스트를 입력하세요" style="height: 350px; font-size: 20px; font-weight: bold;">{{con}}</textarea>
+            </div>
+            <div class="col-lg-2 text-center" style="margin: auto;">
+                <select class="form-select" name="fn" size="5" aria-label="size 3 select example">
+                    {% for code, name in na.items %} 
+                        <option value="{{code}}" {% if fn %} {% if fn == code %} selected {% endif %} {% else %} {% if code == 'en' %} selected {% endif %} {% endif %}>{{name|upper}}</option>
+                    {% endfor %} 
+                    <!-- 나라 5개 먼저 연습 해 보기 -->
+                    <!-- <option value="ko" {% if fn == "ko" %} selected {% endif %}>KOREAN</option>
+                    <option value="en" {% if fn == "en" %} selected {% endif %}>ENGLISH</option>
+                    <option value="ja" {% if fn == "ja" %} selected {% endif %}>JAPANESE</option>
+                    <option value="fr" {% if fn == "fr" %} selected {% endif %}>FRENCH</option>
+                    <option value="ru" {% if fn == "ru" %} selected {% endif %}>RUSSIAN</option> -->
+                </select>
+                <button type="button" onclick="trans1()" class="btn btn-success mt-3 mb-3">번역</button> 
+                                        <!-- onclick는 java script위해서 -->
+                <select class="form-select" name="tn" size="5" aria-label="size 3 select example">
+                    {% for code, name in na.items %} 
+                        <option value="{{code}}" {% if tn %} {% if tn == code %} selected {% endif %} {% else %} {% if code == 'ko' %} selected {% endif %} {% endif %}>{{name|upper}}</option>
+                    {% endfor %} 
+                    <!-- <option value="ko" {% if fn == "ko" %} selected {% endif %}>KOREAN</option>
+                    <option value="en" {% if fn == "en" %} selected {% endif %}>ENGLISH</option>
+                    <option value="ja" {% if fn == "ja" %} selected {% endif %}>JAPANESE</option>
+                    <option value="fr" {% if fn == "fr" %} selected {% endif %}>FRENCH</option>
+                    <option value="ru" {% if fn == "ru" %} selected {% endif %}>RUSSIAN</option> -->
+                </select>
+            </div>
+            <div class="col-lg-5">
+                <textarea type="text" class="form-control" style="height: 350px; font-size: 20px; font-weight: bold;" disabled>{{trans}}</textarea>
+            </div>
+        </div>
+    </form>
+</div>
+
+    <script>
+        function trans1(){
+            // 본문에서 transform이라는 친구가 있다는 뜻
+            a=document.transForm; 
+            // 잘 나오는지 먼저 확인
+            // alert(a.fn.value);
+            if(!a.con.value){
+                alert("번역할 내용을 입력하세요");
+            }
+            else if(a.fn.value == a.tn.value){
+                alert("서로 다른 나라 선택 바랍니다");
+            }
+            else{
+                a.submit();
+            }
+        }
+    </script>
+
+
+{% endblock %} 
